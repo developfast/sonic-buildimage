@@ -1,0 +1,35 @@
+{% from "common/functions.conf.j2" import get_ipv4_loopback_address, get_ipv6_loopback_address, get_vnet_interfaces, get_ipv4_port_address, get_internal_interface %}
+!
+frr version 7.2.1-sonic
+frr defaults traditional
+!
+hostname vlab-07
+!
+!
+!
+mpls ldp
+{% block ldp_init %}
+{# set router-id #}
+ router-id {{ get_ipv4_loopback_address(LOOPBACK_INTERFACE, "Loopback4096") | ip }}
+{% for name in DEVICE_NEIGHBOR_METADATA %}
+{%   if 'ASIC' in name %}
+ neighbor {{ DEVICE_NEIGHBOR_METADATA[name]['lo_addr'] | ip }} password password
+ !
+{%   endif %}
+{% endfor %}
+
+ address-family ipv4
+  discovery transport-address {{ get_ipv4_port_address(PORTCHANNEL_INTERFACE, get_internal_interface(PORTCHANNEL, PORT).split(',')[0]) | ip }}
+  !
+{% set int_intfs = get_internal_interface(PORTCHANNEL, PORT).split(',') %}
+{% for intf in int_intfs %}
+  interface {{ intf }}
+  !
+{% endfor %}
+{% endblock ldp_init %}
+ exit-address-family
+ !
+!
+!
+line vty
+!
