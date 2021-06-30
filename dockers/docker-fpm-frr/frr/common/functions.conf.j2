@@ -2,7 +2,7 @@
 {% set L = namespace(ip=None) %}
 {% for name, prefix in interfaces|pfx_filter %}
 {%   if name == loopbackname %}
-{%     if prefix | ipv4 %}
+{%     if prefix | ipv4 and prefix != None %}
 {%       set L.ip = prefix %}
 {%     endif %}
 {%   endif %}
@@ -25,11 +25,33 @@
 {% macro get_vnet_interfaces(interfaces) -%}
 {% set L = namespace(intfs=[]) %}
 {% set vnet_intfs = [] %}
-{% for (key, metadata) in interfaces.items() %}
-{%   if "vnet_name" in metadata %}
+{% for (key, metadata) in interfaces.iteritems() %}
+{%   if metadata.has_key("vnet_name") %}
 {%     set vnet_intfs = vnet_intfs.append(key) %}
 {%   endif %}
 {% endfor %}
 {% set L.intfs = vnet_intfs %}
 {{ L.intfs }}
+{%- endmacro %}
+
+{% macro get_ipv4_port_address(interfaces, portname) -%}
+{% set L = namespace(ip=None) %}
+{% for name, prefix in interfaces|pfx_filter %}
+{%   if name == portname %}
+{%     if prefix | ipv4 and prefix != None %}
+{%       set L.ip = prefix %}
+{%     endif %}
+{%   endif %}
+{% endfor %}
+{{ L.ip }}
+{%- endmacro %}
+
+{% macro get_internal_interface(interfaces, port) -%}
+{% set kintfs = [] %}
+{% for intfname, values in interfaces.items() %}
+{%   if port[interfaces[intfname]['members'][0]]['role'] == "Int" %}
+{%      set kintfs = kintfs.append(intfname|string) %}
+{%   endif %}
+{% endfor %}
+{{ kintfs|join(",") }}
 {%- endmacro %}

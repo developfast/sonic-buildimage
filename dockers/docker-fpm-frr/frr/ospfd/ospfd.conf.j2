@@ -1,0 +1,21 @@
+{% from "common/functions.conf.j2" import get_ipv4_loopback_address, get_ipv6_loopback_address, get_vnet_interfaces %}
+!
+frr version 7.2.1-sonic
+frr defaults traditional
+!
+hostname vlab-07
+!
+!
+!
+!
+!
+router ospf
+{% block ospf_init %}
+{# set router-id #}
+ ospf router-id {{ get_ipv4_loopback_address(LOOPBACK_INTERFACE, "Loopback4096") | ip }}
+{# advertise network prefix #}
+ network 0.0.0.0/0 area 0
+{% endblock ospf_init %}
+!
+line vty
+!
