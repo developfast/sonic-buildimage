@@ -19,9 +19,9 @@ mpls ldp
 {% endfor %}
 
  address-family ipv4
-  discovery transport-address {{ get_ipv4_port_address(PORTCHANNEL_INTERFACE, get_internal_interface(PORTCHANNEL, PORT).split(',')[0]) | ip }}
+  discovery transport-address {{ get_ipv4_port_address(PORTCHANNEL_INTERFACE, get_internal_interface(PORTCHANNEL, PORT, 'members', 'role').split(',')[0]) | ip }}
   !
-{% set int_intfs = get_internal_interface(PORTCHANNEL, PORT).split(',') %}
+{% set int_intfs = get_internal_interface(PORTCHANNEL, PORT, 'members', 'role').split(',') %}
 {% for intf in int_intfs %}
   interface {{ intf }}
   !
