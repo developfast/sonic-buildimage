@@ -7,6 +7,8 @@ CFGGEN_PARAMS=" \
     -d \
     -y /etc/sonic/constants.yml \
     -t /usr/share/sonic/templates/frr_vars.j2 \
+    -t /usr/share/sonic/templates/ldpd/ldpd.conf.j2,/etc/frr/ldpd.conf \
+    -t /usr/share/sonic/templates/ospfd/ospfd.conf.j2,/etc/frr/ospfd.conf \
     -t /usr/share/sonic/templates/supervisord/supervisord.conf.j2,/etc/supervisor/conf.d/supervisord.conf \
     -t /usr/share/sonic/templates/supervisord/critical_processes.j2,/etc/supervisor/critical_processes \
     -t /usr/share/sonic/templates/isolate.j2,/usr/sbin/bgp-isolate \
