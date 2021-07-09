@@ -63,7 +63,8 @@ if [ -z "$CONFIG_TYPE" ] || [ "$CONFIG_TYPE" == "separated" ]; then
             -t /usr/local/sonic/frrcfgd/ospfd.conf.j2,/etc/frr/ospfd.conf \
         "
     else
-        rm -f /etc/frr/bfdd.conf /etc/frr/ospfd.conf
+        rm -f /etc/frr/bfdd.conf
+	# got rid of "rm -f /etc/frr/ospfd.conf" to circumvent ospfd.conf from being deleted
     fi
     sonic-cfggen $CFGGEN_PARAMS
     echo "no service integrated-vtysh-config" > /etc/frr/vtysh.conf
